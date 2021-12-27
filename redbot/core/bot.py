@@ -839,8 +839,8 @@ class RedBase(
         channel = message.channel
         guild = message.guild
 
-        if message.author.bot:
-            return False
+        # if message.author.bot:
+        #     return False
 
         if guild:
             assert isinstance(channel, discord.abc.GuildChannel)  # nosec
@@ -1518,11 +1518,8 @@ class RedBase(
         messages,  without the overhead of additional get_context calls
         per cog.
         """
-        if not message.author.bot:
-            ctx = await self.get_context(message)
-            await self.invoke(ctx)
-        else:
-            ctx = None
+        ctx = await self.get_context(message)
+        await self.invoke(ctx)
 
         if ctx is None or ctx.valid is False:
             self.dispatch("message_without_command", message)
