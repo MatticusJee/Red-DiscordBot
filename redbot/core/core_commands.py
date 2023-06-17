@@ -2407,7 +2407,7 @@ class Core(commands.commands._RuleDropper, commands.Cog, CoreLogic):
         await ctx.bot.shutdown()
 
     @commands.command(name="restart")
-    @commands.is_owner()
+    # @checks.is_owner()
     async def _restart(self, ctx: commands.Context, silently: bool = False):
         """Attempts to restart [botname].
 

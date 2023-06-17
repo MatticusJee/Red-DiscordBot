@@ -1450,7 +1450,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         )
 
     @command_audioset.command(name="restart")
-    @commands.is_owner()
+    # @commands.is_owner()
     async def command_audioset_restart(self, ctx: commands.Context):
         """Restarts the lavalink connection."""
         async with ctx.typing():

@@ -822,8 +822,8 @@ class Red(
         channel = message.channel
         guild = message.guild
 
-        if message.author.bot:
-            return False
+        # if message.author.bot:
+        #     return False
 
         # We do not consider messages with PartialMessageable channel as eligible.
         # See `process_commands()` for our handling of it.
@@ -1617,38 +1617,35 @@ class Red(
         messages,  without the overhead of additional get_context calls
         per cog.
         """
-        if not message.author.bot:
-            ctx = await self.get_context(message)
+        ctx = await self.get_context(message)
 
-            # The licenseinfo command must always be available, even in a slash only bot.
-            # To get around not having the message content intent, a mention prefix
-            # will always work for it.
-            if not ctx.valid:
-                for m in (f"<@{self.user.id}> ", f"<@!{self.user.id}> "):
-                    if message.content.startswith(m):
-                        ctx.view.undo()
-                        ctx.view.skip_string(m)
-                        invoker = ctx.view.get_word()
-                        command = self.all_commands.get(invoker, None)
-                        if isinstance(command, commands.commands._AlwaysAvailableMixin):
-                            ctx.command = command
-                            ctx.prefix = m
-                        break
+        # The licenseinfo command must always be available, even in a slash only bot.
+        # To get around not having the message content intent, a mention prefix
+        # will always work for it.
+        if not ctx.valid:
+            for m in (f"<@{self.user.id}> ", f"<@!{self.user.id}> "):
+                if message.content.startswith(m):
+                    ctx.view.undo()
+                    ctx.view.skip_string(m)
+                    invoker = ctx.view.get_word()
+                    command = self.all_commands.get(invoker, None)
+                    if isinstance(command, commands.commands._AlwaysAvailableMixin):
+                        ctx.command = command
+                        ctx.prefix = m
+                    break
 
-            if (
+        if (
                 ctx.invoked_with
                 and isinstance(message.channel, discord.PartialMessageable)
                 and message.channel.type is not discord.ChannelType.private
-            ):
-                log.warning(
-                    "Discarded a command message (ID: %s) with PartialMessageable channel: %r",
-                    message.id,
-                    message.channel,
-                )
-            else:
-                await self.invoke(ctx)
+        ):
+            log.warning(
+                "Discarded a command message (ID: %s) with PartialMessageable channel: %r",
+                message.id,
+                message.channel,
+            )
         else:
-            ctx = None
+            await self.invoke(ctx)
 
         if ctx is None or ctx.valid is False:
             self.dispatch("message_without_command", message)
