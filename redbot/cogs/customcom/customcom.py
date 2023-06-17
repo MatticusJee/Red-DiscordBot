@@ -646,7 +646,7 @@ class CustomCommands(commands.Cog):
         if isinstance(message.channel, discord.PartialMessageable):
             return
 
-        if len(message.content) < 2 or is_private or not user_allowed or message.author.bot:
+        if len(message.content) < 2 or is_private or not user_allowed:
             return
 
         if await self.bot.cog_disabled_in_guild(self, message.guild):
